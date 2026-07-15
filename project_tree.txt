@@ -1,0 +1,26 @@
+iftech/
+├── .gitignore
+├── README.md                  
+│
+├── iac/                       
+│   ├── terraform/             
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   ├── outputs.tf
+│   │   └── terraform.tfvars
+│   │
+│   └── ansible/               
+│       ├── playbooks/
+│       │   └── deploy.yml     
+│       ├── roles/             
+│       └── inventory.ini      
+│
+└── app/                       
+    ├── docker-compose.yml     
+    ├── .env.example
+    ├── frontend/              
+    │   └── ...
+    └── backend/               
+        ├── main.py
+        ├── requirements.txt
+        └── ...
