@@ -1,0 +1,5 @@
+# Ignore sensitive information and local state of Terraform
+iac/terraform/*.tfvars
+iac/terraform/*.tfstate
+iac/terraform/*.tfstate.backup
+iac/terraform/.terraform/
