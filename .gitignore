@@ -3,3 +3,6 @@ iac/terraform/*.tfvars
 iac/terraform/*.tfstate
 iac/terraform/*.tfstate.backup
 iac/terraform/.terraform/
+
+# Other files
+iac/diagrams/venv
