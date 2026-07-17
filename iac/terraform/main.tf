@@ -1,24 +1,13 @@
-resource "aws_vpc" "vpc_teste" {
-  cidr_block           = "10.0.0.0/16"
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-
-  tags = {
-    Name = "vpc-teste-iftech"
-  }
+module "network" {
+  source      = "./modules/network"
+  environment = "iftech"
 }
 
-resource "aws_subnet" "subnet_teste" {
-  vpc_id                  = aws_vpc.vpc_teste.id
-  cidr_block              = "10.0.1.0/24"
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "subnet-teste-iftech"
-  }
-}
-
-output "vpc_id" {
-  value       = aws_vpc.vpc_teste.id
-  description = "ID da VPC criada na AWS"
+module "computing" {
+  source                = "./modules/computing"
+  environment           = "iftech"
+  vpc_id                = module.network.vpc_id
+  subnet_ids            = module.network.public_subnet_ids
+  alb_security_group_id = module.network.alb_security_group_id
+  ec2_security_group_id = module.network.ec2_security_group_id
 }
