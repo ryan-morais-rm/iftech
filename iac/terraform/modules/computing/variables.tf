@@ -1,0 +1,25 @@
+variable "vpc_id" { 
+    type = string 
+}
+variable "subnet_ids" { 
+    type = list(string) 
+}
+variable "ec2_security_group_id" { 
+    type = string 
+}
+variable "alb_security_group_id" { 
+    type = string 
+}
+variable "environment" { 
+    type = string 
+    default = "iftech" 
+}
+variable "instance_type" { 
+    type = string 
+    default = "t3.medium" 
+}
+variable "ssh_public_key_path" {
+  type        = string
+  default     = "~/.ssh/id_iftech.pub"
+  description = "SSH pub key"
+}
