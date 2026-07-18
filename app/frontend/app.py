@@ -41,16 +41,18 @@ with tab_llm:
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
+    chat_box = st.container(height=500)
+
     for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
+        with chat_box.chat_message(message["role"]):
             st.markdown(message["content"])
 
     if prompt := st.chat_input("Pergunte algo ao modelo..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
+        with chat_box.chat_message("user"):
             st.markdown(prompt)
 
-        with st.chat_message("assistant"):
+        with chat_box.chat_message("assistant"):
             with st.spinner("Pensando..."):
                 try:
                     response = requests.post(
