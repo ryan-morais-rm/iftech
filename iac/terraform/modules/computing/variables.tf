@@ -1,3 +1,7 @@
+variable "environment" { 
+    type = string 
+    default = "iftech" 
+}
 variable "vpc_id" { 
     type = string 
 }
@@ -10,9 +14,10 @@ variable "ec2_security_group_id" {
 variable "alb_security_group_id" { 
     type = string 
 }
-variable "environment" { 
-    type = string 
-    default = "iftech" 
+variable "custom_ami_id" {
+  type        = string
+  description = "ID from customized AMI with docker + LLM model + ansible configs..."
+  # default   = "ami-0123456789abcdef0"
 }
 variable "instance_type" { 
     type = string 

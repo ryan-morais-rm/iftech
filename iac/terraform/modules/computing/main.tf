@@ -1,20 +1,10 @@
-data "aws_ami" "ubuntu" {
-  most_recent = true
-  owners      = ["099720109477"] # Canonical
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
-  }
-}
-
 resource "aws_key_pair" "iftech_key" {
   key_name   = "key-iftech-${var.environment}"
   public_key = file(var.ssh_public_key_path)
 }
 
 resource "aws_instance" "db_server" {
-  ami                    = data.aws_ami.ubuntu.id
+  ami                    = var.custom_ami_id
   instance_type          = "t3.small"
   subnet_id              = var.subnet_ids[0]
   vpc_security_group_ids = [var.ec2_security_group_id]
