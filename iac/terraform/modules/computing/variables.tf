@@ -19,6 +19,11 @@ variable "custom_ami_id" {
   description = "ID from customized AMI with docker + LLM model + ansible configs..."
   # default   = "ami-0123456789abcdef0"
 }
+variable "custom_db_ami_id" {
+  type        = string
+  description = "ID from customized AMI with docker + LLM model + ansible configs..."
+  # default   = "ami-0123456789abcdef0"
+}
 variable "instance_type" { 
     type = string 
     default = "t3.medium" 

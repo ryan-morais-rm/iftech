@@ -4,7 +4,7 @@ resource "aws_key_pair" "iftech_key" {
 }
 
 resource "aws_instance" "db_server" {
-  ami                    = var.custom_ami_id
+  ami                    = var.custom_db_ami_id
   instance_type          = "t3.small"
   subnet_id              = var.subnet_ids[0]
   vpc_security_group_ids = [var.ec2_security_group_id]
@@ -56,7 +56,7 @@ resource "aws_lb_listener" "listener" {
 
 resource "aws_launch_template" "app_lt" {
   name_prefix   = "lt-app-${var.environment}-"
-  image_id      = data.aws_ami.ubuntu.id
+  image_id      = var.custom_ami_id
   instance_type = var.instance_type
   key_name      = aws_key_pair.iftech_key.key_name  
 
