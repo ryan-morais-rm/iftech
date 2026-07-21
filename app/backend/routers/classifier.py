@@ -1,6 +1,9 @@
+import json
+import re
 import time
 from pathlib import Path
 
+import torch
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
@@ -12,6 +15,9 @@ logger = get_logger("classificador")
 MODEL_DIR = Path(__file__).resolve().parent.parent / "ml" / "model"
 
 model = None
+vocab = None
+max_len = None
+model_version = None
 
 
 class ReviewRequest(BaseModel):
@@ -23,14 +29,51 @@ class SentimentResponse(BaseModel):
     confidence: float
 
 
+def preprocess_text(text):
+    text = re.sub(r"[^\w\s]", "", text)
+    return text.lower()
+
+
+def text_to_sequence(text, vocab_map):
+    return [vocab_map.get(word, 0) for word in text.split()]
+
+
+def pad_sequence(sequence, length):
+    if len(sequence) >= length:
+        return sequence[:length]
+    return sequence + [0] * (length - len(sequence))
+
+
 @router.on_event("startup")
 def load_model():
-    global model
-    section("Modelo Classico (IMDB)", color="\033[36m")
-    logger.info(f"Carregando artefato de {MODEL_DIR}")
-    time.sleep(1)
-    model = "imdb-sentiment-mock-v1"
-    logger.info(f"Modelo '{model}' carregado e pronto em memoria")
+    global model, vocab, max_len, model_version
+    section("TextCNN Congelado (IMDB)", color="\033[36m")
+
+    frozen_path = MODEL_DIR / "model_frozen.pt"
+    vocab_path = MODEL_DIR / "vocab.json"
+    metadata_path = MODEL_DIR / "metadata.json"
+
+    if not frozen_path.exists() or not vocab_path.exists():
+        logger.error(f"Artefato nao encontrado em {MODEL_DIR}. Rode ml/model/train.ipynb antes.")
+        return
+
+    logger.info(f"Carregando modelo congelado (TorchScript) de {frozen_path}")
+    model = torch.jit.load(str(frozen_path))
+    model.eval()
+
+    vocab = json.loads(vocab_path.read_text())
+
+    if metadata_path.exists():
+        metadata = json.loads(metadata_path.read_text())
+        model_version = metadata.get("version", "desconhecida")
+        max_len = metadata.get("max_len", 200)
+        logger.info(
+            f"Modelo versao '{model_version}' carregado "
+            f"(acuracia de teste: {metadata.get('test_accuracy')})"
+        )
+    else:
+        max_len = 200
+        logger.info("Modelo carregado (sem metadata.json)")
 
 
 @router.post("/predict", response_model=SentimentResponse)
@@ -40,25 +83,20 @@ def predict(request: ReviewRequest):
 
     start = time.perf_counter()
 
-    positive_words = {"good", "great", "excellent", "amazing", "love", "best", "wonderful"}
-    negative_words = {"bad", "terrible", "awful", "worst", "boring", "hate", "poor"}
+    sequence = pad_sequence(text_to_sequence(preprocess_text(request.text), vocab), max_len)
+    input_tensor = torch.tensor(sequence, dtype=torch.long).unsqueeze(0)
 
-    words = set(request.text.lower().split())
-    positives = len(words & positive_words)
-    negatives = len(words & negative_words)
+    with torch.no_grad():
+        logits = model(input_tensor)
+        probabilities = torch.softmax(logits, dim=1)[0]
 
-    if positives >= negatives:
-        sentiment = "Positivo"
-    else:
-        sentiment = "Negativo"
-
-    total = positives + negatives
-    confidence = 0.5 if total == 0 else round(max(positives, negatives) / total, 2)
+    predicted_class = int(probabilities.argmax())
+    sentiment = "Positivo" if predicted_class == 1 else "Negativo"
+    confidence = round(float(probabilities[predicted_class]), 2)
 
     elapsed_ms = (time.perf_counter() - start) * 1000
 
     logger.info(f'Texto recebido: "{request.text}"')
-    logger.info(f"Palavras positivas encontradas: {positives} | negativas: {negatives}")
-    logger.info(f"Decisao: {sentiment} (confianca {confidence:.0%}) em {elapsed_ms:.1f}ms")
+    logger.info(f"Decisao: {sentiment} (confianca {confidence:.0%}) em {elapsed_ms:.1f}ms [modelo {model_version}]")
 
     return SentimentResponse(sentiment=sentiment, confidence=confidence)
