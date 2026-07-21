@@ -10,6 +10,8 @@ venv/
 
 *.joblib
 *.pkl
+app/backend/ml/model/metadata.json
+app/backend/ml/model/data/
 
 .vscode/
 .idea/
