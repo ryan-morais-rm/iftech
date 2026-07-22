@@ -1,6 +1,7 @@
 module "network" {
-  source      = "./modules/network"
-  environment = "iftech"
+  source          = "./modules/network"
+  environment     = "iftech"
+  admin_public_ip = var.admin_public_ip
 }
 
 module "computing" {
