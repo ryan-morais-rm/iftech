@@ -1,3 +1,7 @@
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -19,7 +23,7 @@ resource "aws_internet_gateway" "gw" {
 resource "aws_subnet" "public_1" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
-  availability_zone       = "us-east-1a"
+  availability_zone       = data.aws_availability_zones.available.names[0]
   map_public_ip_on_launch = true
 
   tags = {
@@ -30,7 +34,7 @@ resource "aws_subnet" "public_1" {
 resource "aws_subnet" "public_2" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.2.0/24"
-  availability_zone       = "us-east-1b"
+  availability_zone       = data.aws_availability_zones.available.names[1]
   map_public_ip_on_launch = true
 
   tags = {
@@ -76,21 +80,28 @@ resource "aws_security_group" "alb_sg" {
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    ="-1"
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "alb-sg-${var.environment}"
   }
 }
 
 resource "aws_security_group" "ec2_sg" {
   name        = "ec2-sg-${var.environment}"
-  description = "SSH access and Load Balancer traffic"
+  description = "Restricted SSH access and Load Balancer traffic"
   vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [
+      var.admin_public_ip,
+      aws_vpc.main.cidr_block
+    ]
   }
 
   ingress {
@@ -112,5 +123,9 @@ resource "aws_security_group" "ec2_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "ec2-sg-${var.environment}"
   }
 }

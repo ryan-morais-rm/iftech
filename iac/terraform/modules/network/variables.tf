@@ -6,3 +6,7 @@ variable "environment" {
   type    = string
   default = "iftech"
 }
+variable "admin_public_ip" {
+  type        = string
+  description = "Admin public IP from root module"
+}
