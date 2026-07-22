@@ -1,5 +1,4 @@
 from diagrams import Diagram, Cluster
-
 from diagrams.aws.network import Route53, ELB
 from diagrams.aws.compute import EC2, AutoScaling
 from diagrams.onprem.client import Users
@@ -13,7 +12,7 @@ with Diagram(
 
     users = Users("IFTech GUESTS")
 
-    dns = Route53("Elastic IP\nRoute53")
+    dns = Route53("Elastic IP\nRoute 53")
 
     alb = ELB("Application\nLoad Balancer")
 
@@ -28,10 +27,5 @@ with Diagram(
             ec2_b = EC2("Instance B\nApp Web\nLLM Server")
 
             asg >> [ec2_a, ec2_b]
-
-        db = EC2("Standalone DB")
-
-        ec2_a >> db
-        ec2_b >> db
 
     users >> dns >> alb >> asg
