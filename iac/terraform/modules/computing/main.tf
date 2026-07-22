@@ -46,7 +46,7 @@ resource "aws_launch_template" "app_lt" {
   name_prefix   = "lt-app-${var.environment}-"
   image_id      = var.custom_ami_id
   instance_type = var.instance_type
-  key_name      = aws_key_pair.iftech_key.key_name  
+  key_name      = aws_key_pair.iftech_key.key_name
 
   network_interfaces {
     associate_public_ip_address = true
@@ -70,8 +70,49 @@ resource "aws_autoscaling_group" "asg" {
   desired_capacity = 1
   max_size         = 2
 
+  health_check_type         = "ELB"
+  health_check_grace_period = 180
+
   launch_template {
     id      = aws_launch_template.app_lt.id
     version = "$Latest"
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "ec2-asg-app-${var.environment}"
+    propagate_at_launch = true
+  }
+}
+
+resource "aws_autoscaling_policy" "cpu_policy" {
+  name                      = "target-tracking-cpu-${var.environment}"
+  autoscaling_group_name    = aws_autoscaling_group.asg.name
+  policy_type               = "TargetTrackingScaling"
+  estimated_instance_warmup = 300
+
+
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+
+    target_value = 70.0
+  }
+}
+
+resource "aws_autoscaling_policy" "alb_requests_policy" {
+  name                      = "target-tracking-alb-requests-${var.environment}"
+  autoscaling_group_name    = aws_autoscaling_group.asg.name
+  policy_type               = "TargetTrackingScaling"
+  estimated_instance_warmup = 300
+
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ALBRequestCountPerTarget"
+      resource_label         = "${aws_lb.alb.arn_suffix}/${aws_lb_target_group.tg.arn_suffix}"
+    }
+
+    target_value = 10.0
   }
 }

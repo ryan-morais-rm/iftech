@@ -11,4 +11,8 @@ module "computing" {
   subnet_ids            = module.network.public_subnet_ids
   alb_security_group_id = module.network.alb_security_group_id
   ec2_security_group_id = module.network.ec2_security_group_id
+
+  depends_on = [
+    module.network
+  ]
 }
