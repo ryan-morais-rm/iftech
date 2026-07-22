@@ -3,18 +3,6 @@ resource "aws_key_pair" "iftech_key" {
   public_key = file(var.ssh_public_key_path)
 }
 
-resource "aws_instance" "db_server" {
-  ami                    = var.custom_db_ami_id
-  instance_type          = "t3.small"
-  subnet_id              = var.subnet_ids[0]
-  vpc_security_group_ids = [var.ec2_security_group_id]
-  key_name               = aws_key_pair.iftech_key.key_name  
-
-  tags = {
-    Name = "ec2-db-fixed-${var.environment}"
-  }
-}
-
 resource "aws_lb" "alb" {
   name               = "alb-${var.environment}"
   internal           = false
