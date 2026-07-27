@@ -1,0 +1,8 @@
+---
+- name: Main configuration playbook
+  hosts: all
+  become: true 
+
+  roles:
+    - base
+    #- app
