@@ -1,0 +1,16 @@
+1. System Packages & Runtimes:
+-> Docker Engine and containerd
+-> Docker Compose Plugin (v2)
+-> System utilities: curl, git, unzip, ca-certificates, gnupg
+
+2. Network, Permissions & Service Configurations (systemd):
+-> Add default user (e.g., ubuntu, ec2-user, or debian) to the 'docker' group
+-> Enable the main Docker service on boot
+
+3. AI Artifacts & Application Preparation:
+-> [NEW] Create and enable the 'iftech-app.service' in systemd to execute 'docker compose up -d' on EC2 boot
+-> Clone repository into /opt/iftech
+-> [NEW] Set directory ownership to default user (chown -R debian:debian /opt/iftech) ensuring proper permissions for model_frozen.pt
+-> Create environment variables file (.env) for Docker Compose (OLLAMA_URL, LLM_MODEL, BACKEND_URL)
+-> Pre-build Docker images (docker compose build)
+-> [NEW] Temporarily initialize the Ollama container, perform 'ollama pull' for the AI model (e.g., phi3:mini), and persist data into the volume

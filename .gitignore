@@ -1,8 +1,11 @@
-# Ignore sensitive information and local state of Terraform
+# Terraform restricted files
 iac/terraform/*.tfvars
 iac/terraform/*.tfstate
 iac/terraform/*.tfstate.backup
 iac/terraform/.terraform/
+
+# Ansible restricted files
+iac/ansible/inventory.ini
 
 # Other files
 iac/diagrams/venv
