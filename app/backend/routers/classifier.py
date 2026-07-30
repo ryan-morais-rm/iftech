@@ -14,6 +14,8 @@ logger = get_logger("classificador")
 
 MODEL_DIR = Path(__file__).resolve().parent.parent / "ml" / "model"
 
+TEMPERATURE = 8.0
+
 model = None
 vocab = None
 max_len = None
@@ -67,10 +69,9 @@ def load_model():
         metadata = json.loads(metadata_path.read_text())
         model_version = metadata.get("version", "desconhecida")
         max_len = metadata.get("max_len", 200)
-        logger.info(
-            f"Modelo versao '{model_version}' carregado "
-            f"(acuracia de teste: {metadata.get('test_accuracy')})"
-        )
+        test_accuracy = metadata.get("test_accuracy")
+        accuracy_info = f"{test_accuracy:.2%}" if test_accuracy is not None else "nao calculada"
+        logger.info(f"Modelo versao '{model_version}' carregado (acuracia de teste: {accuracy_info})")
     else:
         max_len = 200
         logger.info("Modelo carregado (sem metadata.json)")
@@ -88,7 +89,10 @@ def predict(request: ReviewRequest):
 
     with torch.no_grad():
         logits = model(input_tensor)
-        probabilities = torch.softmax(logits, dim=1)[0]
+        print(logits, flush=True)
+        probabilities = torch.softmax(logits / TEMPERATURE, dim=1)[0]
+        print(probabilities, flush=True)
+
 
     predicted_class = int(probabilities.argmax())
     sentiment = "Positivo" if predicted_class == 1 else "Negativo"
