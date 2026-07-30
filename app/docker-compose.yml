@@ -2,6 +2,8 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=-1
     ports:
       - "11434:11434"
     volumes:
@@ -34,6 +36,8 @@ services:
     environment:
       - OLLAMA_URL=${OLLAMA_URL}
       - LLM_MODEL=${LLM_MODEL}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL}
     ports:
       - "8000:8000"
     depends_on:
