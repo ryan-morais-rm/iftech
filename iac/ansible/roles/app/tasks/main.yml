@@ -1,0 +1,58 @@
+---
+- name: Sync/Copy files from local app to /opt/iftech
+  ansible.builtin.copy:
+    src: "{{ local_app_path }}/"
+    dest: "{{ app_dest_dir }}/"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0755'
+
+- name: Create .env file for Docker Compose
+  ansible.builtin.template:
+    src: env.j2
+    dest: "{{ app_compose_dir }}/.env"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0644'
+
+- name: Run images build
+  ansible.builtin.command:
+    cmd: docker compose build
+    chdir: "{{ app_compose_dir }}"
+
+# 4. Baixar o modelo do Ollama e persistir no volume da imagem
+- name: Download Ollama model and save in image volume
+  ansible.builtin.command:
+    cmd: docker compose up -d ollama
+    chdir: "{{ app_compose_dir }}"
+
+- name: Wait Ollama API on
+  ansible.builtin.uri:
+    url: "{{ env_ollama_url }}"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 3
+
+- name: Pull AI model from Ollama (phi3:mini)
+  ansible.builtin.command:
+    cmd: "docker compose exec -T ollama ollama pull {{ ollama_model_name }}"
+    chdir: "{{ app_compose_dir }}"
+
+- name: Stop ollama container after download
+  ansible.builtin.command:
+    cmd: docker compose down
+    chdir: "{{ app_compose_dir }}"
+
+- name: Set up systemd app service file
+  ansible.builtin.template:
+    src: iftech-app.service.j2
+    dest: /etc/systemd/system/iftech-app.service
+    mode: '0644'
+
+- name: Enable iftech-app on system boot
+  ansible.builtin.systemd:
+    name: iftech-app
+    enabled: yes
+    daemon_reload: yes
