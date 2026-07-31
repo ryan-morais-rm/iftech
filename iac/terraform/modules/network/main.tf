@@ -95,6 +95,7 @@ resource "aws_security_group" "ec2_sg" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
+    description = "SSH Access"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -105,17 +106,19 @@ resource "aws_security_group" "ec2_sg" {
   }
 
   ingress {
-    from_port       = 8080
-    to_port         = 8080
+    description     = "HTTP from Application Load Balancer"
+    from_port       = 8501
+    to_port         = 8501
     protocol        = "tcp"
     security_groups = [aws_security_group.alb_sg.id]
   }
 
   ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    self      = true
+    description = "Internal SG traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
   }
 
   egress {

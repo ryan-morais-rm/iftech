@@ -17,17 +17,18 @@ resource "aws_lb" "alb" {
 
 resource "aws_lb_target_group" "tg" {
   name     = "tg-app-${var.environment}"
-  port     = 8080
+  port     = 8501
   protocol = "HTTP"
   vpc_id   = var.vpc_id
 
   health_check {
-    path                = "/"
+    path                = "/_stcore/health"
     protocol            = "HTTP"
-    matcher             = "200-399"
+    matcher             = "200"
     interval            = 15
+    timeout             = 5
     healthy_threshold   = 2
-    unhealthy_threshold = 2
+    unhealthy_threshold = 3
   }
 }
 
