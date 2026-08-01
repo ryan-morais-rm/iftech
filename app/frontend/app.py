@@ -6,15 +6,15 @@ import streamlit as st
 BACKEND_URL = os.getenv("BACKEND_URL", "http://backend:8000")
 
 st.set_page_config(page_title="IFTech 2026")
-st.title("IFTech 2026 - Modelos Classicos vs LLMs em Produção")
+st.title("IFTech 2026 - Modelos Clássicos vs LLMs em Produção")
 
 tab_imdb, tab_llm_local, tab_llm_api = st.tabs(
     ["Classificador IMDB", "Chat LLM Local", "Chat LLM API"]
 )
 
 with tab_imdb:
-    st.subheader("Analise de Sentimento")
-    review = st.text_area("Digite uma resenha de filme (em ingles):")
+    st.subheader("Análise de Sentimento")
+    review = st.text_area("Digite uma resenha de filme (em inglês):")
 
     if st.button("Classificar"):
         if not review.strip():
@@ -32,7 +32,7 @@ with tab_imdb:
                     emoji = "😀" if data["sentiment"] == "Positivo" else "😞"
                     st.success(
                         f"Sentimento: **{data['sentiment']}** {emoji} "
-                        f"(confianca: {data['confidence']:.0%})"
+                        f"(Confiança: {data['confidence']:.0%})"
                     )
                 except requests.RequestException as exc:
                     st.error(f"Erro ao chamar o backend: {exc}")
