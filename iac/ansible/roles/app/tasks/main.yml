@@ -36,7 +36,7 @@
 
 - name: Pull AI model from Ollama
   ansible.builtin.command:
-    cmd: "docker compose exec -T ollama ollama pull {{ ollama_model_name }}"
+    cmd: "docker compose exec -T ollama sh -c 'ollama pull {{ env_llm_model }}'"
     chdir: "{{ app_compose_dir }}"
 
 - name: Stop ollama container after download
@@ -50,8 +50,9 @@
     dest: /etc/systemd/system/iftech-app.service
     mode: '0644'
 
-- name: Enable iftech-app on system boot
+- name: Enable and activate iftech-app on system boot
   ansible.builtin.systemd:
     name: iftech-app
+    state: started
     enabled: yes
     daemon_reload: yes
