@@ -17,19 +17,6 @@ services:
     networks:
       - iftech
 
-  ollama-init:
-    image: ollama/ollama:latest
-    container_name: ollama-init
-    environment:
-      - OLLAMA_HOST=http://ollama:11434
-    entrypoint: ["/bin/sh", "-c", "ollama pull ${LLM_MODEL}"]
-    depends_on:
-      ollama:
-        condition: service_healthy
-    restart: "no"
-    networks:
-      - iftech
-
   backend:
     build: ./backend
     container_name: backend
@@ -43,8 +30,6 @@ services:
     depends_on:
       ollama:
         condition: service_healthy
-      ollama-init:
-        condition: service_completed_successfully
     networks:
       - iftech
 
