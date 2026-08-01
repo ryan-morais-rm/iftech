@@ -1,26 +1,69 @@
 iftech/
 ├── .gitignore
-├── README.md                  
-│
-├── iac/                       
-│   ├── terraform/             
+├── README.md
+├── iac/
+│   ├── diagrams/
+│   │   ├── aws_architecture.png
+│   │   └── draw.py
+│   ├── terraform/
 │   │   ├── main.tf
 │   │   ├── variables.tf
 │   │   ├── outputs.tf
-│   │   └── terraform.tfvars
-│   │
-│   └── ansible/               
-│       ├── playbooks/
-│       │   └── deploy.yml     
-│       ├── roles/             
-│       └── inventory.ini      
-│
-└── app/                       
-    ├── docker-compose.yml     
+│   │   ├── terraform.tfvars
+│   │   ├── providers.tf
+│   │   ├── .terraform.lock.hcl
+│   │   └── modules/
+│   │       ├── computing/
+│   │       │   ├── main.tf
+│   │       │   ├── outputs.tf
+│   │       │   └── variables.tf
+│   │       └── network/
+│   │           ├── main.tf
+│   │           ├── outputs.tf
+│   │           └── variables.tf
+│   └── ansible/
+│       ├── roles/
+│       │   ├── app/
+│       │   │   ├── tasks/
+│       │   │   │   └── main.yml
+│       │   │   ├── templates/
+│       │   │   │   ├── env.j2
+│       │   │   │   └── iftech-app.service
+│       │   │   └── vars/
+│       │   │       └── main.yml
+│       │   └── base/
+│       │       ├── handlers/
+│       │       │   └── main.yml
+│       │       ├── tasks/
+│       │       │   └── main.yml
+│       │       └── vars/
+│       │           └── main.yml
+│       ├── ansible.cfg
+│       ├── file/
+│       ├── inventory.ini
+│       ├── main.yml
+│       └── run.sh
+└── app/
+    ├── docker-compose.yml
+    ├── docker-compose.override.yml
     ├── .env.example
-    ├── frontend/              
-    │   └── ...
-    └── backend/               
+    ├── frontend/
+    │   ├── .streamlit/
+    │   ├── app.py
+    │   ├── Dockerfile
+    │   └── requirements.txt
+    └── backend/
+        ├── Dockerfile
+        ├── logging_config.py
         ├── main.py
         ├── requirements.txt
-        └── ...
+        ├── ml/
+        │   ├── model/
+        │   │   ├── .gitkeep
+        │   │   ├── model_frozen.pt
+        │   │   ├── train.ipynb
+        │   │   └── vocab.json
+        └── routers/
+            ├── _init_.py
+            ├── classifier.py
+            └── llm.py
