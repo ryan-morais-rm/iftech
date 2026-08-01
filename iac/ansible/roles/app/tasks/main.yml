@@ -1,7 +1,7 @@
 ---
 - name: Sync/Copy files from local app to /opt/iftech
   ansible.builtin.copy:
-    src: "{{ local_app_path }}/"
+    src: "{{ local_app_path }}/app"
     dest: "{{ app_dest_dir }}/"
     owner: "{{ app_user }}"
     group: "{{ app_group }}"
@@ -20,7 +20,6 @@
     cmd: docker compose build
     chdir: "{{ app_compose_dir }}"
 
-# 4. Baixar o modelo do Ollama e persistir no volume da imagem
 - name: Download Ollama model and save in image volume
   ansible.builtin.command:
     cmd: docker compose up -d ollama
@@ -28,14 +27,14 @@
 
 - name: Wait Ollama API on
   ansible.builtin.uri:
-    url: "{{ env_ollama_url }}"
+    url: "{{ env_localhost }}"
     status_code: 200
   register: result
   until: result.status == 200
   retries: 10
   delay: 3
 
-- name: Pull AI model from Ollama (phi3:mini)
+- name: Pull AI model from Ollama
   ansible.builtin.command:
     cmd: "docker compose exec -T ollama ollama pull {{ ollama_model_name }}"
     chdir: "{{ app_compose_dir }}"
