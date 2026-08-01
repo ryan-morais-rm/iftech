@@ -6,6 +6,7 @@ iac/terraform/.terraform/
 
 # Ansible restricted files
 iac/ansible/inventory.ini
+iac/ansible/roles/app/vars/main.yml
 
 # Other files
 iac/diagrams/venv
