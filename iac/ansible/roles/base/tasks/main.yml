@@ -5,24 +5,22 @@
     state: present
     update_cache: yes
 
-- name: Set up official GPG Docker key in Debian
+- name: Set up official GPG Docker Key
   ansible.builtin.file:
     path: /etc/apt/keyrings
     state: directory
     mode: '0755'
 
-- name: Download official GPG key
+- name: Download official GPG Key
   ansible.builtin.get_url:
-    url: https://download.docker.com/linux/debian/gpg
+    url: "{{ docker_repo_url }}/gpg"
     dest: /etc/apt/keyrings/docker.asc
     mode: '0644'
 
-- name: Add official docker repository in APT sources
+- name: Add official Docker Repository in APT Sources
   ansible.builtin.apt_repository:
-    repo: >-
-      deb [arch={{ 'amd64' if ansible_facts['architecture'] == 'x86_64' else ansible_facts['architecture'] }} signed-by=/etc/apt/keyrings/docker.asc]
-      https://download.docker.com/linux/debian
-      {{ ansible_facts['distribution_release'] }} stable
+    repo: "deb [arch={{ 'amd64' if ansible_facts['architecture'] == 'x86_64' else ansible_facts['architecture'] }} signed-by=/etc/apt/keyrings/docker.asc] {{ docker_repo_url }} 
+      {{ ansible_facts['distribution_release'] }} stable"
     state: present
     filename: docker
 
@@ -32,7 +30,7 @@
       state: present
       update_cache: yes
 
-- name: Assure docker service is active and enabled in systemd
+- name: Assure Docker service is active and enabled in systemd
   ansible.builtin.systemd:
     name: docker
     state: started
@@ -40,6 +38,6 @@
 
 - name: Add non-root EC2 user to docker group
   ansible.builtin.user:
-    name: "{{ ansible_user | default(system_user) }}"
+    name: "{{ ansible_user }}"
     groups: docker
     append: yes

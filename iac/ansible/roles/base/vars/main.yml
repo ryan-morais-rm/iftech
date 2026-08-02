@@ -1,5 +1,5 @@
 ---
-system_user: "admin"
+docker_repo_url: "{{ 'https://download.docker.com/linux/ubuntu' if ansible_distribution == 'Ubuntu' else 'https://download.docker.com/linux/debian' }}"
 
 base_packages:
   - ca-certificates
