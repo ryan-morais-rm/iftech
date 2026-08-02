@@ -49,6 +49,16 @@ resource "aws_launch_template" "app_lt" {
   instance_type = var.instance_type
   key_name      = aws_key_pair.iftech_key.key_name
 
+  block_device_mappings {
+    device_name = "/dev/sda1"
+
+    ebs {
+      volume_size           = 50
+      volume_type           = "gp3"
+      delete_on_termination = true
+    }
+  }
+
   network_interfaces {
     associate_public_ip_address = true
     security_groups             = [var.ec2_security_group_id]
@@ -72,7 +82,7 @@ resource "aws_autoscaling_group" "asg" {
   max_size         = 2
 
   health_check_type         = "ELB"
-  health_check_grace_period = 180
+  health_check_grace_period = 600
 
   launch_template {
     id      = aws_launch_template.app_lt.id
@@ -114,6 +124,6 @@ resource "aws_autoscaling_policy" "alb_requests_policy" {
       resource_label         = "${aws_lb.alb.arn_suffix}/${aws_lb_target_group.tg.arn_suffix}"
     }
 
-    target_value = 10.0
+    target_value = 100.0
   }
 }

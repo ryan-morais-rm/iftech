@@ -17,11 +17,11 @@ variable "alb_security_group_id" {
 variable "custom_ami_id" {
   type        = string
   description = "ID from customized AMI with docker + LLM model + ansible configs..."
-  default     = "ami-0b826bb6d96d2afe4" # Only for demo, not a real AMI
+  default     = "ami-0b826bb6d96d2afe4" # Amazon Linux AMI
 }
 variable "instance_type" { 
     type = string 
-    default = "t3.medium" 
+    default = "c5.xlarge" 
 }
 variable "ssh_public_key_path" {
   type        = string
