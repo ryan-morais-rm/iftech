@@ -2,6 +2,7 @@ from diagrams import Diagram, Cluster, Edge
 from diagrams.aws.network import Route53, ELB
 from diagrams.aws.compute import EC2, AutoScaling
 from diagrams.aws.management import Cloudwatch
+from diagrams.aws.storage import S3
 from diagrams.onprem.client import Users
 
 with Diagram(
@@ -17,6 +18,8 @@ with Diagram(
     with Cluster("VPC"):
         alb = ELB("Application\nLoad Balancer")
         cloudwatch = Cloudwatch("CloudWatch\nAlarms (CPU / ALB Req)")
+        
+        bucket = S3("S3 Bucket\n Operating System VMDK")
 
         with Cluster("Auto Scaling Group\n(Min: 1 | Max: 2)"):
             asg = AutoScaling("Scaling Policy")
@@ -27,5 +30,7 @@ with Diagram(
             asg - [ec2_a, ec2_b]
 
     users >> dns >> alb >> ec2_a
+    
+    [ec2_a, ec2_b] >> Edge(color="steelblue", style="dashed") >> bucket
 
-    cloudwatch >> Edge(color="firebrick", style="dashed", label="Triggers Scaling") >> asg
+    cloudwatch >> Edge(color="firebrick", style="dashed", label=" Triggers") >> asg
