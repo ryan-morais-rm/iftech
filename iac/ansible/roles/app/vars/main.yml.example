@@ -1,12 +1,12 @@
 ---
-local_app_path: "/home/ryan-correia/Área\ de\ trabalho/.projetos/repositorios/github/legados/iftech"
+local_app_path: ""
 
 # Destination directories inside EC2
-app_dest_dir: "/opt/iftech"
-app_compose_dir: "/opt/iftech/app"
+app_dest_dir: ""
+app_compose_dir: ""
 
 # EC2 user and group
-app_user: "ec2-user"
+app_user: ""
 app_group: "ec2-user"
 
 # These variables are going to be written in file /opt/iftech/app/.env in EC2
