@@ -4,7 +4,6 @@ variable "vpc_cidr" {
 }
 variable "environment" {
   type    = string
-  default = "iftech"
 }
 variable "admin_public_ip" {
   type        = string

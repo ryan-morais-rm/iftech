@@ -1,6 +1,5 @@
-variable "environment" { 
-    type = string 
-    default = "iftech" 
+variable "environment" {
+  type    = string
 }
 variable "vpc_id" { 
     type = string 

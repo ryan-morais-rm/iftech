@@ -10,6 +10,11 @@ variable "aws_secret_key" {
   sensitive   = true
 }
 
+variable "environment" { 
+    type = string 
+    default = "iftech" 
+}
+
 variable "aws_region" {
   description = "AWS Region"
   type        = string
