@@ -11,6 +11,12 @@ resource "aws_s3_bucket" "app_bucket" {
   }
 }
 
+resource "aws_s3_object" "iso_folder" {
+  bucket = aws_s3_bucket.app_bucket.id
+  key    = "isos/"
+  source = null
+}
+
 resource "aws_s3_bucket_public_access_block" "public_access_block" {
   bucket = aws_s3_bucket.app_bucket.id
 
