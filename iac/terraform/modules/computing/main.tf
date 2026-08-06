@@ -1,8 +1,3 @@
-resource "aws_key_pair" "iftech_key" {
-  key_name   = "pub-key-${var.environment}"
-  public_key = file(var.ssh_public_key_path)
-}
-
 resource "aws_lb" "alb" {
   name               = "alb-${var.environment}"
   internal           = false
@@ -47,7 +42,6 @@ resource "aws_launch_template" "app_lt" {
   name_prefix   = "lt-app-${var.environment}-"
   image_id      = var.custom_ami_id
   instance_type = var.instance_type
-  key_name      = aws_key_pair.iftech_key.key_name
 
   block_device_mappings {
     device_name = "/dev/sda1"
