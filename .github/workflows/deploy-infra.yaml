@@ -35,6 +35,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.10.x"
+          terraform_wrapper: false 
 
       - name: Terraform Format
         id: fmt
@@ -69,4 +70,4 @@ jobs:
           TF_VAR_tfstate_bucket_name: "iftech-terraform-state-app"
           TF_VAR_admin_public_ip: ${{ secrets.ADMIN_PUBLIC_IP }}
           TF_VAR_custom_ami_id: ${{ secrets.CUSTOM_AMI_ID }}
-        run: terraform apply -auto-approve -no-color
+        run: terraform apply -auto-approve -input=false -no-color

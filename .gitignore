@@ -1,8 +1,14 @@
-# Terraform restricted files
+# Terraform application restricted files
 iac/terraform/*.tfvars
 iac/terraform/*.tfstate
 iac/terraform/*.tfstate.backup
 iac/terraform/.terraform/
+
+# Terrafomr CI/CD restricted files
+integration/*.tfvars
+integration/*.tfstate
+integration/*.tfstate.backup
+integration/.terraform/
 
 # Ansible restricted files
 iac/ansible/inventory.ini
