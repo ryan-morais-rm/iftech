@@ -2,6 +2,11 @@ variable "environment" {
     type    = string 
 }
 
+variable "custom_ami_id" {
+  type        = string
+  description = "ID from customized AMI with docker + LLM model + ansible configs..."
+}
+
 variable "tfstate_bucket_name" {
   type      = string
   sensitive = true 

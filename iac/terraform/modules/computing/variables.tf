@@ -16,7 +16,6 @@ variable "alb_security_group_id" {
 variable "custom_ami_id" {
   type        = string
   description = "ID from customized AMI with docker + LLM model + ansible configs..."
-  default     = "ami-02566e5f4e167c0aa" # Amazon Linux AMI
 }
 variable "instance_type" { 
     type = string 
