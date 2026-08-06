@@ -1,5 +1,5 @@
 resource "aws_key_pair" "iftech_key" {
-  key_name   = "key-iftech-${var.environment}"
+  key_name   = "pub-key-${var.environment}"
   public_key = file(var.ssh_public_key_path)
 }
 

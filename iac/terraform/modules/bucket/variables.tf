@@ -1,6 +1,6 @@
 variable "bucket_name" {
   type        = string
-  default     = "iftech-app"
+  default     = "app"
 }
 variable "environment" {
   type        = string
