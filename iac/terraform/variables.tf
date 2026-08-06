@@ -1,24 +1,20 @@
-variable "aws_access_key" {
-  description = "AWS AK"
-  type        = string
-  sensitive   = true
-}
-
-variable "aws_secret_key" {
-  description = "AWS SK"
-  type        = string
-  sensitive   = true
-}
-
 variable "environment" { 
-    type = string 
-    default = "iftech" 
+    type    = string 
+}
+
+variable "custom_ami_id" {
+  type        = string
+  description = "ID from customized AMI with docker + LLM model + ansible configs..."
+}
+
+variable "tfstate_bucket_name" {
+  type      = string
+  sensitive = true 
 }
 
 variable "aws_region" {
   description = "AWS Region"
   type        = string
-  default     = "us-east-1"
 }
 
 variable "admin_public_ip" {
