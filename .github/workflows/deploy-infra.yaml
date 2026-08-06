@@ -57,6 +57,7 @@ jobs:
           TF_VAR_environment: "iftech"
           TF_VAR_tfstate_bucket_name: "iftech-terraform-state-app"
           TF_VAR_admin_public_ip: ${{ secrets.ADMIN_PUBLIC_IP }}
+          TF_VAR_custom_ami_id: ${{ secrets.CUSTOM_AMI_ID }}
         run: terraform plan -no-color
         continue-on-error: true
 
@@ -67,4 +68,5 @@ jobs:
           TF_VAR_environment: "iftech"
           TF_VAR_tfstate_bucket_name: "iftech-terraform-state-app"
           TF_VAR_admin_public_ip: ${{ secrets.ADMIN_PUBLIC_IP }}
+          TF_VAR_custom_ami_id: ${{ secrets.CUSTOM_AMI_ID }}
         run: terraform apply -auto-approve -no-color
