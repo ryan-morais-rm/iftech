@@ -4,7 +4,6 @@ variable "environment" {
 
 variable "custom_ami_id" {
   type        = string
-  description = "ID from customized AMI with docker + LLM model + ansible configs..."
 }
 
 variable "tfstate_bucket_name" {
@@ -13,10 +12,10 @@ variable "tfstate_bucket_name" {
 }
 
 variable "aws_region" {
-  description = "AWS Region"
   type        = string
 }
 
 variable "admin_public_ip" {
   type        = string
+  sensitive   = true 
 }

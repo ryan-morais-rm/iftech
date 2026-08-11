@@ -21,3 +21,8 @@ module "bucket" {
   source      = "./modules/bucket"
   environment = var.environment
 }
+
+module "aws_iftech_access" {
+  source      = "./modules/aws_iftech_access"
+  environment = var.environment
+}
