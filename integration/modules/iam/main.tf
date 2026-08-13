@@ -43,7 +43,44 @@ data "aws_iam_policy_document" "github_actions_policy" {
       "iam:CreateServiceLinkedRole", 
       "iam:PassRole",                
       "iam:GetRole",
-      "iam:ListInstanceProfiles"
+      "iam:ListInstanceProfiles",
+
+      "iam:CreateUser",
+      "iam:DeleteUser",
+      "iam:GetUser",
+      "iam:UpdateUser",
+      "iam:ListUsers",
+      "iam:TagUser",
+      "iam:UntagUser",
+      
+      "iam:CreateGroup",
+      "iam:DeleteGroup",
+      "iam:GetGroup",
+      "iam:UpdateGroup",
+      "iam:ListGroups",
+      "iam:ListGroupsForUser",
+      "iam:AddUserToGroup",
+      "iam:RemoveUserFromGroup",
+      
+      "iam:AttachGroupPolicy",
+      "iam:DetachGroupPolicy",
+      "iam:ListAttachedGroupPolicies",
+      "iam:GetGroupPolicy",
+      
+      "iam:CreateLoginProfile",
+      "iam:DeleteLoginProfile",
+      "iam:GetLoginProfile",
+      "iam:UpdateLoginProfile",
+      
+      "iam:CreateAccessKey",
+      "iam:DeleteAccessKey",
+      "iam:ListAccessKeys",
+      "iam:GetAccessKeyLastUsed",
+      "iam:UpdateAccessKey",
+
+      "iam:GetPolicy",
+      "iam:GetPolicyVersion",
+      "iam:ListPolicies"
     ]
     resources = ["*"]
   }
