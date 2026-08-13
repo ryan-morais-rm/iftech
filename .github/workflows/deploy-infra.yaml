@@ -54,8 +54,8 @@ jobs:
         id: plan
         if: github.event_name == 'pull_request'
         env:
-          TF_VAR_aws_region: "us-east-1"
-          TF_VAR_environment: "iftech"
+          TF_VAR_aws_region: "${{ secrets.REGION }}"
+          TF_VAR_environment: "${{ secrets.ENVIRONMENT }}"
           TF_VAR_tfstate_bucket_name: "iftech-terraform-state-app"
           TF_VAR_admin_public_ip: ${{ secrets.ADMIN_PUBLIC_IP }}
           TF_VAR_custom_ami_id: ${{ secrets.CUSTOM_AMI_ID }}
@@ -65,9 +65,9 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
-          TF_VAR_aws_region: "us-east-1"
+          TF_VAR_aws_region: "${{ secrets.REGION }}"
           TF_VAR_environment: "iftech"
-          TF_VAR_tfstate_bucket_name: "iftech-terraform-state-app"
+          TF_VAR_tfstate_bucket_name: "${{ secrets.ENVIRONMENT }}"
           TF_VAR_admin_public_ip: ${{ secrets.ADMIN_PUBLIC_IP }}
           TF_VAR_custom_ami_id: ${{ secrets.CUSTOM_AMI_ID }}
         run: terraform apply -auto-approve -input=false -no-color
