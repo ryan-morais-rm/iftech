@@ -1,0 +1,81 @@
+Módulo 1: O Caos da Configuração e a Magia do Ansible
+
+O objetivo aqui é mostrar como automatizar o que o aluno faria manualmente via SSH.
+
+    1.1. O que é Gerenciamento de Configuração?
+
+        O fim dos scripts em Bash complexos e a vantagem da abordagem Agentless (sem agente, apenas SSH e Python).
+
+    1.2. Dissecando a estrutura iac/ansible/
+
+        O Inventário (inventory.ini): Como o Ansible sabe em quais máquinas deve logar.
+
+        O Maestro (main.yml e run.sh): O Playbook principal que orquestra a execução e o script facilitador para rodar o comando.
+
+    1.3. Organização Profissional com Roles
+
+        Por que não colocar tudo num arquivo só? Apresentando a divisão em roles/.
+
+        Role base: A fundação (preparação do sistema operacional, instalação de dependências globais).
+
+        Role app: Onde a mágica do projeto acontece.
+
+    1.4. Arquivos Dinâmicos e Reação a Eventos
+
+        Templates (templates/): Mostrando o poder do Jinja2 para gerar o .env dinamicamente (env.j2) e criar o serviço no Linux (iftech-app.service).
+
+        Handlers (handlers/main.yml): Como o Ansible é inteligente o suficiente para reiniciar um serviço (ex: Nginx ou Systemd) apenas se houver alguma mudança real.
+
+Módulo 2: A Ponte (Da Máquina Local para a Nuvem)
+
+O momento de virada da apresentação. O Ansible é ótimo, mas ele tem um limite.
+
+    2.1. O Paradoxo do Ovo e da Galinha
+
+        "O Ansible configurou perfeitamente o nosso servidor... mas quem criou esse servidor físico/virtual? Quem configurou o firewall de rede para liberar a porta 80/443?"
+
+    2.2. Provisionamento vs Configuração
+
+        Apresentando a diferença clara: Terraform constrói a casa (AWS), o Ansible mobília a casa (SO/App).
+
+    2.3. O que é o Terraform?
+
+        Infraestrutura como Código (IaC) de forma declarativa e o conceito de controle de estado (tfstate).
+
+Módulo 3: Construindo o Data Center com Terraform
+
+Mergulhando no diretório iac/terraform/ para criar a infraestrutura real.
+
+    3.1. A Base do Terraform (terraform/)
+
+        A tríade principal: main.tf (chamadas), variables.tf (parâmetros) e outputs.tf (o que queremos ver no final, como IPs públicos).
+
+        Como o providers.tf conecta nosso código aos servidores da AWS.
+
+    3.2. A Arquitetura Modular (A pasta modules/)
+
+        Assim como o Ansible tem Roles, o Terraform tem Modules para reutilização de código.
+
+        Módulo network: Construindo as rodovias (VPC, Subnets públicas/privadas, Internet Gateway, Tabelas de Roteamento).
+
+        Módulo computing: Subindo os servidores (Instâncias EC2, Auto Scaling, Security Groups/Firewalls).
+
+Módulo 4: A Arquitetura na Nuvem AWS
+
+O clímax do minicurso: visualizar o resultado final e conectar as pontas.
+
+    4.1. Visualizando a Nuvem (iac/diagrams/)
+
+        Apresentando o diagrama da arquitetura (aws_architecture.png).
+
+        Curiosidade: Como até o diagrama foi gerado via código (draw.py).
+
+    4.2. O Fluxo Completo (A Integração)
+
+        Revisão da jornada completa do DevOps:
+
+            O Terraform roda e provisiona a VPC, Subnets e EC2 na AWS.
+
+            O Terraform devolve o IP público do EC2 recém-criado.
+
+            O Ansible pega esse IP (via inventory.ini atualizado ou dinâmico) e entra no EC2 configurando o ambiente, aplicando o .env e iniciando o iftech-app.service.
